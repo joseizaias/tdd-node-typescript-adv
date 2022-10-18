@@ -15,10 +15,10 @@ export class FacebookAuthenticationService {
     if (fbData !== null && fbData !== undefined) {
       const accountData = await this.UserAccountRepo.load({ email: fbData.email })
 
-      if (accountData?.name !== null && accountData?.name !== undefined) {
+      if (accountData !== null && accountData !== undefined) {
         await this.UserAccountRepo.updateWithFacebook({
           id: accountData.id,
-          name: accountData.name,
+          name: accountData.name ?? fbData.name,
           facebookId: fbData.facebookId
         })
       } else {
