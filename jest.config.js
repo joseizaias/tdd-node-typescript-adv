@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-  collectCoverageFrom: ['<rootDir>/src/**/&.ts'],
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
   moduleNameMapper: {
