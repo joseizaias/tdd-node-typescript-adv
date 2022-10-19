@@ -17,5 +17,6 @@ module.exports = {
   ],
   transform: {
     '\\.ts': 'ts-jest'
-  }
+  },
+  clearMocks: true // pode ser configurado nos testes com o metodo -> jest.clearAllMocks()
 }

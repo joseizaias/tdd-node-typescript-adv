@@ -20,21 +20,29 @@ describe('FacebookAuthenticationService', () => {
   let crypto: MockProxy<TokenGenerator>
   let userAccountRepo: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository>
   let sut: FacebookAuthenticationService
-  const token = 'any_token'
+  let token: string
+
   const emailParams = { email: 'any_fb_email' }
 
-  beforeEach(() => {
+  beforeAll(() => {
+    token = 'any_token'
     facebookApi = mock()
     facebookApi.loadUser.mockResolvedValue({
       name: 'any_fb_name',
       email: 'any_fb_email',
       facebookId: 'any_fb_id'
     })
+
     userAccountRepo = mock()
     userAccountRepo.load.mockResolvedValue(undefined)
     userAccountRepo.saveWithFacebook.mockResolvedValue({ id: 'any_account_id' })
+
     crypto = mock()
     crypto.generateToken.mockResolvedValue('any_generated_token')
+  })
+
+  beforeEach(() => {
+    // jest.clearAllMocks() --> limpa os mocks --> pode ser configurado no jest.config.ts com a propriedade: clearMocks: true
     sut = new FacebookAuthenticationService(
       facebookApi,
       userAccountRepo,
@@ -50,18 +58,18 @@ describe('FacebookAuthenticationService', () => {
   })
 
   it('should call AuthenticationError when LoadFacebookUserApi returns undefined', async () => {
-    facebookApi.loadUser.mockResolvedValueOnce(undefined)
+    facebookApi.loadUser.mockResolvedValueOnce(undefined) // arrange
 
-    const authResult = await sut.perform({ token })
+    const authResult = await sut.perform({ token }) // act
 
-    expect(authResult).toEqual(new AuthenticationError())
+    expect(authResult).toEqual(new AuthenticationError()) // assert
   })
 
   it('should call LoadUserAccountRepo when LoadFacebookUserApi returns data', async () => {
-    await sut.perform({ token })
+    await sut.perform({ token }) // o arrange estah no beforeAll() e no beforeEach() // aqui eh o act
 
-    expect(userAccountRepo.load).toHaveBeenCalledWith(emailParams)
-    expect(userAccountRepo.load).toHaveBeenCalledTimes(1)
+    expect(userAccountRepo.load).toHaveBeenCalledWith(emailParams) // assert
+    expect(userAccountRepo.load).toHaveBeenCalledTimes(1) // assert
   })
 
   it('should call SaveFacebookAccountRepository with FacebookAccount', async () => {
