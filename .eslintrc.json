@@ -6,7 +6,8 @@
   "rules": {
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/no-namespace": "off",
-    "@typescript-eslint/parser": "off"
+    "@typescript-eslint/parser": "off",
+    "@typescript-eslint/return-await": "off"
   }
 }
 
