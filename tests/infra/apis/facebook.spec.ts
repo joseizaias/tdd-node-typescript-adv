@@ -16,7 +16,9 @@ describe('FacebookApi', () => {
   })
 
   beforeEach(() => {
-    httpClient.get.mockResolvedValueOnce({ access_token: 'any_app_token' }) // Quando usamos o mockResolvedValueOnce, devemos colocar no "beforeEach()" - Jah o mockResolvedValue, podemos colocar no "beforeAll()"
+    httpClient.get
+      .mockResolvedValueOnce({ access_token: 'any_app_token' }) // Quando usamos o mockResolvedValueOnce, devemos colocar no "beforeEach()" - Jah o mockResolvedValue, podemos colocar no "beforeAll()"
+      .mockResolvedValueOnce({ data: { user_id: 'any_user_id' } })
     sut = new FacebookApi(httpClient, clientId, clientSecret)
   })
 
@@ -41,6 +43,18 @@ describe('FacebookApi', () => {
       params: {
         access_token: 'any_app_token', // token to servidor - token da empresa
         input_token: 'any_client_token'
+      }
+    })
+  })
+
+  it('should get user info', async () => {
+    await sut.loadUser({ token: 'any_client_token' })
+
+    expect(httpClient.get).toHaveBeenCalledWith({
+      url: 'https://graph.facebook.com/any_user_id',
+      params: {
+        fields: 'id,name,email',
+        access_token: 'any_client_token'
       }
     })
   })
