@@ -25,17 +25,33 @@ export class FacebookApi implements LoadFacebookUserApi {
     private readonly clientSecret: string
   ) {}
 
+  // async loadUser (params: LoadFacebookUserApi.Params): Promise<LoadFacebookUserApi.Result> {
+  //   try {
+  //     const userInfo = await this.getUserInfo(params.token)
+  //     return {
+  //       facebookId: userInfo.id,
+  //       name: userInfo.name,
+  //       email: userInfo.email
+  //     }
+  //   } catch (error) {
+  //     return undefined
+  //   }
+  // }
+
+  // async loadUser (params: LoadFacebookUserApi.Params): Promise<LoadFacebookUserApi.Result> {
+  //   return this.getUserInfo(params.token)
+  //     .then(userInfo => ({
+  //       facebookId: userInfo.id,
+  //       name: userInfo.name,
+  //       email: userInfo.email
+  //     }))
+  //     .catch(() => undefined)
+  // }
+
   async loadUser (params: LoadFacebookUserApi.Params): Promise<LoadFacebookUserApi.Result> {
-    try {
-      const userInfo = await this.getUserInfo(params.token)
-      return {
-        facebookId: userInfo.id,
-        name: userInfo.name,
-        email: userInfo.email
-      }
-    } catch (error) {
-      return undefined
-    }
+    return this.getUserInfo(params.token)
+      .then(({ id, name, email }) => ({ facebookId: id, name, email }))
+      .catch(() => undefined)
   }
 
   private async getAppToken (): Promise<AppToken> {
@@ -47,6 +63,7 @@ export class FacebookApi implements LoadFacebookUserApi {
         grant_type: 'client_credentials'
       }
     })
+      .catch(() => undefined)
   }
 
   private async getDebugToken (clientToken: string): Promise<DebugToken> {
